@@ -6,6 +6,7 @@ const cors = require('cors')
 
 app.use(cors())
 app.use(express.json())
+app.use(express.static('dist'))
 
 morgan.token('data', (req) => {
   if (req.method === 'POST') {
@@ -52,7 +53,21 @@ app.get('/api/persons/:id', (request, response) => {
     response.status(404).end()
   }
 })
-5
+
+app.put('/api/persons/:id', (request, response) => {
+  const id = Number(request.params.id)
+  const updatedPerson = request.body
+
+  const index = persons.findIndex(person => person.id === id);
+
+  if (index !== -1) {
+    persons[index] = { ...persons[index], ...updatedPerson }
+    response.json(persons[index])
+  } else {
+    response.status(404).end();
+  }
+})
+
 const generateId = () => {
   const min = 1
   const max = 1000000
