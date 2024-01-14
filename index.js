@@ -1,8 +1,9 @@
-require('dotenv').config()
 const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
 const app = express()
+require('dotenv').config()
+
 const Person = require('./models/person')
 
 app.use(cors())
@@ -41,7 +42,7 @@ app.get('/api/persons', (request, response, next) => {
 app.get('/api/persons/:id', (request, response, next) => {
   Person.findById(request.params.id)
     .then(person => {
-        response.json(person)
+      response.json(person)
     })
     .catch(error => next(error))
 })
@@ -51,12 +52,12 @@ app.put('/api/persons/:id', (request, response, next) => {
   const updatedPerson = request.body
 
   Person.findByIdAndUpdate(
-    id, 
-    updatedPerson, 
+    id,
+    updatedPerson,
     { new: true, runValidators: true, context: 'query' }
   )
     .then(person => {
-        response.json(person)
+      response.json(person)
     })
     .catch(error => next(error))
 })
@@ -65,7 +66,7 @@ app.post('/api/persons', (request, response, next) => {
   const body = request.body
 
   if (!body.name || !body.number) {
-    return response.status(400).json({ 
+    return response.status(400).json({
       error: 'Name or number is missing'
     })
   }
@@ -89,7 +90,7 @@ app.delete('/api/persons/:id', (request, response, next) => {
   const id = request.params.id
 
   Person.findByIdAndDelete(id)
-    .then(result => {
+    .then(() => {
       response.status(204).end()
     })
     .catch(error => next(error))
